@@ -25,12 +25,119 @@ class MenuEntry {
 
 class MenuTab extends StatefulWidget {
   const MenuTab({super.key});
-  
+
   @override
   MenuTabState createState() => MenuTabState();
 }
 
 class MenuTabState extends State<MenuTab> {
+  late OverlayEntry _overlayEntry;
+  bool _isOverlayVisible = false;
+  OverlayEntry _createOverlayEntry(entry) {
+    return OverlayEntry(
+      builder: (context) => Positioned(
+        top: 20.0,
+        left: 20.0,
+        right: 20.0,
+        bottom: 20.0,
+        child: Container(
+          padding: const EdgeInsets.only(left: 20),
+          decoration: BoxDecoration(color: entry.backgroundColor),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                  onPressed: () => _toggleOverlay(), child: const Text('X')),
+              const SizedBox(
+                height: 30,
+              ),
+              // Text(
+              //   "Date: ${entry.date}",
+              //   style: const TextStyle(
+              //     color: Colors.black,
+              //     fontWeight: FontWeight.bold,
+              //     fontSize: 16,
+              //   ),
+              // ),
+              Text(
+                entry.mealPeriod,
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                entry.description,
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 32,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                "Classroom: ${entry.classroom}",
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 32,
+                ),
+              ),
+              Text(
+                entry.meal,
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 32,
+                ),
+              ),
+              Text(
+                entry.image,
+                style: const TextStyle(
+                  color: Colors.black54,
+                  fontSize: 32,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    // builder: (context) => Positioned(
+    //   top: 100.0,
+    //   left: 50.0,
+    //   right: 50.0,
+    //   child: Material(
+    //     color: Colors.transparent,
+    //     child: Container(
+    //       padding: EdgeInsets.all(20.0),
+    //       decoration: BoxDecoration(
+    //         color: Colors.black54,
+    //         borderRadius: BorderRadius.circular(10.0),
+    //       ),
+    //       child: Column(
+    //         mainAxisSize: MainAxisSize.min,
+    //         children: [
+    //           Text(
+    //             'This is an overlay',
+    //             style: TextStyle(color: Colors.white, fontSize: 18.0),
+    //           ),
+    //           SizedBox(height: 20.0),
+    //           ElevatedButton(
+    //             onPressed: () {
+    //               _hideOverlay();
+    //             },
+    //             child: Text('Close'),
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // ),
+  }
+
   final List<MenuEntry> entries = [
     MenuEntry(
       name: "Surprise",
@@ -125,10 +232,14 @@ class MenuTabState extends State<MenuTab> {
   ];
 
   late List<MenuEntry> getEntries;
+  late MenuEntry overlay;
+
   @override
   void initState() {
     super.initState();
-    _loadMenu(DateTime.parse("${DateTime.now().year}-0${DateTime.now().month}-${DateTime.now().day}"));
+
+    _loadMenu(DateTime.parse(
+        "${DateTime.now().year}-0${DateTime.now().month}-${DateTime.now().day}"));
   }
 
   Future<void> _loadMenu(DateTime chosenDate) async {
@@ -180,60 +291,60 @@ class MenuTabState extends State<MenuTab> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Date: ${entry.date}",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              Text(
-                                entry.name,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                entry.description,
-                                style: const TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                "Meal Period: ${entry.mealPeriod}",
-                                style: const TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                "Classroom: ${entry.classroom}",
-                                style: const TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                entry.meal,
-                                style: const TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              Text(
-                                entry.image,
-                                style: const TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 14,
-                                ),
-                              ),
+                              TextButton(
+                                  onPressed: () =>
+                                      {overlay = entry, _toggleOverlay()},
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        // Text(
+                                        //   "Date: ${entry.date}",
+                                        //   style: const TextStyle(
+                                        //     color: Colors.black,
+                                        //     fontWeight: FontWeight.bold,
+                                        //     fontSize: 16,
+                                        //   ),
+                                        // ),
+                                        Text(
+                                          entry.mealPeriod,
+                                          style: const TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          entry.description,
+                                          style: const TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          "Classroom: ${entry.classroom}",
+                                          style: const TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        Text(
+                                          entry.meal,
+                                          style: const TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        Text(
+                                          entry.image,
+                                          style: const TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ])),
                             ],
                           ),
                         ),
@@ -247,5 +358,22 @@ class MenuTabState extends State<MenuTab> {
         ),
       ],
     );
+  }
+
+  void _toggleOverlay() {
+    if (_isOverlayVisible) {
+      _overlayEntry.remove();
+      setState(() {
+        _isOverlayVisible = false;
+      });
+    } else {
+      _overlayEntry = _createOverlayEntry(overlay);
+      Overlay.of(context).insert(_overlayEntry);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          _isOverlayVisible = true;
+        });
+      });
+    }
   }
 }
