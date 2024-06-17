@@ -1,22 +1,36 @@
 import 'package:flutter/material.dart';
 
+class TimetableEntryDetail {
+  final String learningObjectives;
+  final String learningOutcomes;
+  final String resources;
+
+  TimetableEntryDetail({
+    required this.learningObjectives,
+    required this.learningOutcomes,
+    required this.resources,
+  });
+}
+
 class TimetableEntry {
-  final String startTime;
+  final String time;
   final String endTime;
-  final String name;
-  final String description;
+  final String course;
+  final String details;
   final String location;
   final String classroom;
   final Color backgroundColor;
+  final TimetableEntryDetail detail;
 
   TimetableEntry({
-    required this.startTime,
+    required this.time,
     required this.endTime,
-    required this.name,
-    required this.description,
+    required this.course,
+    required this.details,
     required this.location,
     required this.classroom,
     required this.backgroundColor,
+    required this.detail,
   });
 }
 
@@ -26,59 +40,44 @@ class TimetableTab extends StatefulWidget {
 }
 
 class _TimetableTabState extends State<TimetableTab> {
-  final List<String> days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  final List<String> dates = ["16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29"];
+  final List<String> days = ["M", "T", "W", "T", "F", "S", "S"];
+  final List<String> dates = ["16", "17", "18", "19", "20", "21", "22"];
   
   int _selectedIndex = 0; // Track the selected index
 
   final List<TimetableEntry> entries = [
     TimetableEntry(
-      startTime: "8:00 AM",
+      time: "8:00 AM",
       endTime: "8:30 AM",
-      name: "Morning Assembly",
-      description: "Prayer and Pledge",
-      location: "Hall",
+      course: "Reading Stories",
+      details: "Sự tích Khá Bảnh",
+      location: "In-Class",
       classroom: "Dolphin",
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: Color.fromRGBO(254, 206, 38, 1),
+      detail: TimetableEntryDetail(
+        learningObjectives: "Understand the story of Khá Bảnh.",
+        learningOutcomes: "Students will learn about cultural stories.",
+        resources: "https://www.youtube.com/watch?v=example",
+      ),
     ),
     TimetableEntry(
-      startTime: "8:30 AM",
-      endTime: "9:00 AM",
-      name: "Mathematics",
-      description: "Lesson 1: Addition",
+      time: "8:45 AM",
+      endTime: "9:15 AM",
+      course: "Basic Maths",
+      details: "Counting cookies",
       location: "In-Class",
       classroom: "Dolphin",
       backgroundColor: Colors.grey.shade200,
-    ),
-    TimetableEntry(
-      startTime: "9:00 AM",
-      endTime: "9:30 AM",
-      name: "Science",
-      description: "Lesson 1: Plants",
-      location: "In-Class",
-      classroom: "Dolphin",
-      backgroundColor: Colors.grey.shade200,
-    ),
-    TimetableEntry(
-      startTime: "9:30 AM",
-      endTime: "10:00 AM",
-      name: "Break",
-      description: "Morning Snack",
-      location: "Canteen",
-      classroom: "Dolphin",
-      backgroundColor: Colors.grey.shade200,
-    ),
-    TimetableEntry(
-      startTime: "10:00 AM",
-      endTime: "10:30 AM",
-      name: "English",
-      description: "Lesson 1: Reading",
-      location: "In-Class",
-      classroom: "Dolphin",
-      backgroundColor: Colors.grey.shade200,
+      detail: TimetableEntryDetail(
+        learningObjectives: "Learn to count cookies.",
+        learningOutcomes: "Students will be able to count up to 10.",
+        resources: "https://www.khanacademy.org/math",
+      ),
     ),
     // Add more entries here
   ];
+
+  OverlayEntry? _overlayEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +87,7 @@ class _TimetableTabState extends State<TimetableTab> {
         children: [
           // Adding current date information
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -132,7 +131,7 @@ class _TimetableTabState extends State<TimetableTab> {
           
           // Create a ListView with horizontal scroll direction for dates
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Container(
               height: 70,
               child: ListView.builder(
@@ -190,85 +189,84 @@ class _TimetableTabState extends State<TimetableTab> {
               itemBuilder: (context, index) {
                 final entry = entries[index];
                 return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 80,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              entry.startTime,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                  padding: const EdgeInsets.all(16.0),
+                  child: InkWell(
+                    onTap: () => _showOverlay(context, entry),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 80,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                entry.time,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              entry.endTime,
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 14,
+                              Text(
+                                entry.endTime,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: entry.backgroundColor,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  entry.name,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(
-                                  entry.description,
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(
-                                  "Location: ${entry.location}",
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(
-                                  "Classroom: ${entry.classroom}",
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: entry.backgroundColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    entry.course,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    entry.details,
+                                    style: TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    "Location: ${entry.location}",
+                                    style: TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    "Classroom: ${entry.classroom}",
+                                    style: TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -277,5 +275,80 @@ class _TimetableTabState extends State<TimetableTab> {
         ],
       ),
     );
+  }
+
+  void _showOverlay(BuildContext context, TimetableEntry entry) {
+    OverlayState overlayState = Overlay.of(context);
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 100,
+        left: 20,
+        right: 20,
+        child: Material(
+          color: Colors.transparent,
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: entry.backgroundColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            entry.course,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () => _overlayEntry?.remove(),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "Learning Objectives: ${entry.detail.learningObjectives}",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        "Learning Outcomes: ${entry.detail.learningOutcomes}",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        "Resources: ${entry.detail.resources}",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    overlayState.insert(_overlayEntry!);
   }
 }
